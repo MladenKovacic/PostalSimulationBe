@@ -60,7 +60,6 @@ app.MapPost("/sendmail/{zipcode}", (string zipcode, CreateMailItemReq req) =>
 
     //---------------------------------
     office.ProcessMailCycle();
-
     //---------------------------------------
     regionalOffice.RouteMailCycle();
 
