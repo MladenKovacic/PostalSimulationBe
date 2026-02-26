@@ -70,6 +70,7 @@ app.MapPost("/sendmail/{zipcode}", (string zipcode, CreateMailItemReq req) =>
     return mailItem;
 });
 
+
 app.MapGet("/getall/package/list/{zipcode}", (string zipcode) =>
 {
     if (!regionalOffice.DoesZipCodeExist(zipcode))
@@ -78,17 +79,9 @@ app.MapGet("/getall/package/list/{zipcode}", (string zipcode) =>
     var office = regionalOffice.GetOffice(zipcode);
 
 
-    var mappedOutgoing = office.Outgoing.Select(item =>  new FilteredMailItem(
-        item.Sender.Name,
-        item.Sender.Address.ZipCode,
-        item.Recipient.Name,
-        item.Recipient.Address.ZipCode)).ToList();
+    var mappedOutgoing = office.Outgoing.Select(FilteredMailItem.toDTO).ToList();
 
-        var mappedIncoming =  office.Incoming.Select(item =>  new FilteredMailItem(
-            item.Sender.Name,
-            item.Sender.Address.ZipCode,
-            item.Recipient.Name,
-            item.Recipient.Address.ZipCode)).ToList();
+        var mappedIncoming =  office.Incoming.Select(FilteredMailItem.toDTO).ToList();
     
     return new ZipcodePackageListResponse(mappedOutgoing, mappedIncoming);
 });

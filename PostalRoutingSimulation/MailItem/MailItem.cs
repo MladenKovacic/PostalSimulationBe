@@ -15,6 +15,8 @@ public class MailItem
      private MailStatus MailStatus { get; set; } 
      public MailType MailType { get; init; }
 
+     
+     
      public MailItem()
      {
          UpdateStatus(MailStatus.CreatedAtOffice, "Created");
@@ -24,6 +26,11 @@ public class MailItem
          MailStatus = mailStatus;
      }
 
+     
+     public string SenderZipCode()
+     {
+         return Sender.Address.ZipCode;
+     }
      public MailItem(Person sender, Person recipient, int weightGrams, MailType mailType)
      {
          UpdateStatus(MailStatus.CreatedAtOffice, "Created");
