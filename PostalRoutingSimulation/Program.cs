@@ -17,10 +17,11 @@ var regionalOffice = new RegionalCenter();
 
 var farsta = new PostalOffice(new Address("farstavägen", "farsta", "12640"), regionalOffice);
 var solna = new PostalOffice(new Address("solnavägen", "solna", "80800"), regionalOffice);
-
+var nacka = new PostalOffice(new Address("skogalundsklippan", "nacka", "13139"), regionalOffice);
 
 regionalOffice.RegisterOffice(farsta);
 regionalOffice.RegisterOffice(solna);
+regionalOffice.RegisterOffice(nacka);
 
 var person1 = new Person("Mladen",
     new Address("Stövelvägen 18", "Stockholm", "12640"));
@@ -84,5 +85,7 @@ app.MapGet("/getall/package/list/{zipcode}", (string zipcode) =>
 
     return new ZipcodePackageListResponse(mappedOutgoing, mappedIncoming);
 });
+
+app.MapGet("/getall/postaloffices", () => regionalOffice.GetAllOffices());
 
 app.Run();

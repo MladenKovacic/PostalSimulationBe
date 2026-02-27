@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Microsoft.Extensions.WebEncoders.Testing;
 
 namespace PostalRoutingSimulation.PostalRouting;
 
@@ -13,6 +14,11 @@ public class PostalOffice
     public List<MailItem> Outgoing { get; init; }
     private RegionalCenter RegionalCenter { get; init; }
 
+
+    public PostalOffice(Address address)
+    {
+        Address = address;
+    }
     public PostalOffice(Address address, RegionalCenter regionalCenter)
     {
         Address = address;

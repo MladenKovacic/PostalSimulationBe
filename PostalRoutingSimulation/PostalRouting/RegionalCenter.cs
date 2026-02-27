@@ -7,6 +7,7 @@ using PostalRoutingSimulation.MailItem;
 
 public class RegionalCenter
 {
+    public PostalOffice Offices { get; set; }
     public List<Address> Addresses { get; set; }
     private Dictionary<string, PostalOffice> OfficesByZip { get; set; }
     public List<MailItem> Holding { get; set; }
@@ -23,7 +24,15 @@ public class RegionalCenter
     {
         OfficesByZip.TryAdd(office.Address.ZipCode, office);
     }
-    
+
+    public IEnumerable<PostalDto> GetAllOffices()
+    {
+        return OfficesByZip.Values.Select
+        (office => new PostalDto(
+         office.Address.Street,
+         office.Address.City,
+         office.Address.ZipCode));
+    }
 
     public PostalOffice? GetOffice(string zip)
     {
