@@ -8,7 +8,7 @@ using PostalRoutingSimulation.MailItem;
 
 public class PostalOffice
 {
-    public Address Address { get; set; }
+    public Address Address { get; init; }
     private Dictionary<string, List<Person>> ResidentsByStreet { get; set; }
     public List<MailItem> Incoming { get; init; }
     public List<MailItem> Outgoing { get; init; }

@@ -12,12 +12,12 @@ public record FilteredMailItem(
 {
     public static FilteredMailItem toDTO(MailItem req)
     {
-        var test = new FilteredMailItem(
+        return new FilteredMailItem(
             req.Sender.Name,
             req.Sender.Address.ZipCode,
             req.Recipient.Name,
             req.Recipient.Address.ZipCode);
-        return test;
+        
     }
 };
     
