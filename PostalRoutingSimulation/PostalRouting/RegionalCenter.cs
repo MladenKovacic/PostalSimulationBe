@@ -21,20 +21,17 @@ public class RegionalCenter
 
     public void RegisterOffice(PostalOffice office)
     {
-        OfficesByZip.TryAdd(office.ZipCode, office);
+        OfficesByZip.TryAdd(office.Address.ZipCode, office);
     }
-    
 
-    // public void AddAddress(Address address)
-    // {
-    //     // foreach (var item in OfficesByZip)
-    //     // {
-    //     //     Console.WriteLine($"{item.Value.ZipCode}");
-    //     // }
-    //     Addresses.Add(address);
-    //  Office.ResidentsByStreet.Values.
-    //     Console.WriteLine($"{address.City} {address.Street} {address.ZipCode} ");
-    // }
+    public IEnumerable<PostalDto> GetAllOffices()
+    {
+        return OfficesByZip.Values.Select
+        (office => new PostalDto(
+         office.Address.Street,
+         office.Address.City,
+         office.Address.ZipCode));
+    }
 
     public PostalOffice? GetOffice(string zip)
     {
@@ -89,11 +86,9 @@ public class RegionalCenter
         foreach (var item in itemsProccesing)
         {
             string lastZip = item.Recipient.Address.ZipCode;
-
-            // if (OfficesByZip.ContainsKey(lastZip))
+            
             if (OfficesByZip.TryGetValue(lastZip, out var toLastOffice))
             {
-                // var toLastOffice = OfficesByZip[lastZip];
                 item.UpdateStatus(
                     MailStatus.InTransitToOffice,
                     $"Routing to office serving zip {lastZip}");

@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using Microsoft.Extensions.WebEncoders.Testing;
 
 namespace PostalRoutingSimulation.PostalRouting;
 
@@ -7,80 +8,85 @@ using PostalRoutingSimulation.MailItem;
 
 public class PostalOffice
 {
-    public string ZipCode { get; init; }
+    public Address Address { get; init; }
     private Dictionary<string, List<Person>> ResidentsByStreet { get; set; }
     public List<MailItem> Incoming { get; init; }
-    public List<MailItem> Outgoing { get; init; } 
+    public List<MailItem> Outgoing { get; init; }
     private RegionalCenter RegionalCenter { get; init; }
 
-    public PostalOffice(string zipCode, RegionalCenter regionalCenter)
+
+    public PostalOffice(Address address)
     {
-        ZipCode = zipCode;
+        Address = address;
+    }
+    public PostalOffice(Address address, RegionalCenter regionalCenter)
+    {
+        Address = address;
         ResidentsByStreet = new Dictionary<string, List<Person>>();
         Incoming = new List<MailItem>();
         Outgoing = new List<MailItem>();
         RegionalCenter = regionalCenter;
     }
 
-    
+
     public void RegisterResident(Person person)
     {
         var contactInfo = person.Address.ZipCode;
         string contactsStreet = person.Address.Street;
 
-        if (contactInfo != ZipCode)
+        if (contactInfo != Address.ZipCode)
         {
             throw new Exception("Person does not live in that ZipCode.");
         }
-        
+
         ResidentsByStreet.TryAdd(contactsStreet, new List<Person>());
         ResidentsByStreet[contactsStreet].Add(person);
 
         Console.WriteLine($"{person.Name},{contactsStreet}, {contactInfo}");
     }
-    
+
     public bool DoesAddressCodeExist(Address address)
     {
         if (ResidentsByStreet.TryGetValue(address.Street, out var streetResident))
-        { 
+        {
             foreach (var tenant in streetResident)
             {
-                
-                if(tenant.Address.Equals(address))
+                if (tenant.Address.Equals(address))
                 {
                     return true;
                 }
             }
         }
+
         return false;
     }
 
     public bool KnowsRecipient(Person person)
     {
-       
         if (ResidentsByStreet.TryGetValue(person.Address.Street, out var streetResident))
-        { 
+        {
             foreach (var tenant in streetResident)
             {
-                
-                if(tenant.Equals(person))
+                if (tenant.Equals(person))
                 {
                     return true;
                 }
             }
         }
+
         return false;
     }
+
     public MailItem CreateMailItemAtOffice(MailItem item)
     {
-        item.UpdateStatus(MailStatus.CreatedAtOffice,"We have recived the mailitem");
+        item.UpdateStatus(MailStatus.CreatedAtOffice, "We have recived the mailitem");
         Outgoing.Add(item);
-         
+
         return item;
     }
-    
 
-    public MailItem CreateOutgoingMail(Person sender,Person recipient, int weightGrams, MailType type)
+
+    public MailItem CreateOutgoingMail(Person sender, Person recipient, int weightGrams, MailType type)
     {
         var item = new MailItem(
             MailStatus.CreatedAtOffice,
@@ -101,7 +107,6 @@ public class PostalOffice
     }
 
 
-
     public void ProcessMailCycle()
     {
         var incoming = new List<MailItem>(Incoming);
@@ -113,9 +118,8 @@ public class PostalOffice
                 incomingItem.UpdateStatus(
                     MailStatus.Delivered,
                     "Thank you for using us"
-                    
                 );
-               incomingItem.ShowHistory();
+                incomingItem.ShowHistory();
             }
             else
             {
@@ -124,7 +128,7 @@ public class PostalOffice
                     "Didn't find your recipient"
                 );
 
-                 RegionalCenter.ReviceiveFromOffice(incomingItem);
+                RegionalCenter.ReviceiveFromOffice(incomingItem);
                 Console.WriteLine("Was send back to office");
             }
 
@@ -146,18 +150,9 @@ public class PostalOffice
         }
     }
 
+
     public override string ToString()
     {
         return $"{ResidentsByStreet}";
     }
 }
-
-
-// foreach (var tenant in ResidentsByStreet)
-// {
-//     foreach (var resident in tenant.Value)
-//     {
-//         if (resident.Equals(person))
-//             return true;
-//     }
-// } ResidentsByStreet.TryGetValue((person.Address.Street, out var streetResident) && streetResident.Contains(person));
