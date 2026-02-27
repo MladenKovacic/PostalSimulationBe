@@ -23,8 +23,7 @@ public class Address
                City == other.City &&
                ZipCode == other.ZipCode;
     }
-
-   //Address behöver också en equality som person.
+    
     
     public override string ToString()
     {

@@ -27,4 +27,3 @@ public class Person : IEquatable<Person>
     }
   
 }
-//Address.Equals(other.Address) && Name == other.Name;

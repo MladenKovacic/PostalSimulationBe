@@ -15,8 +15,8 @@ var app = builder.Build();
 
 var regionalOffice = new RegionalCenter();
 
-var farsta = new PostalOffice("12640", regionalOffice);
-var solna = new PostalOffice("80800", regionalOffice);
+var farsta = new PostalOffice(new Address("farstavägen", "farsta", "12640"), regionalOffice);
+var solna = new PostalOffice(new Address("solnavägen", "solna", "80800"), regionalOffice);
 
 
 regionalOffice.RegisterOffice(farsta);
@@ -45,7 +45,6 @@ app.MapPost("/sendpackage", (CreateMailItemReq req) =>
 
     return mailItem;
 });
-
 
 
 app.MapPost("/sendmail/{zipcode}", (string zipcode, CreateMailItemReq req) =>
@@ -81,93 +80,9 @@ app.MapGet("/getall/package/list/{zipcode}", (string zipcode) =>
 
     var mappedOutgoing = office.Outgoing.Select(FilteredMailItem.toDTO).ToList();
 
-        var mappedIncoming =  office.Incoming.Select(FilteredMailItem.toDTO).ToList();
-    
+    var mappedIncoming = office.Incoming.Select(FilteredMailItem.toDTO).ToList();
+
     return new ZipcodePackageListResponse(mappedOutgoing, mappedIncoming);
 });
 
-
-// app.MapGet("/getall/packageInfo/{zipcode}", (string zipcode) =>
-// {
-//  
-// });
 app.Run();
-
-
-// app.MapGet("/sendmail", ()  =>
-// {
-//  
-// });
-// app.MapPost("/namelist", (PersonDto per) =>
-// {
-//     var personEntity = new Person();
-//
-//     personEntity.Name = per.Name;
-//     
-//     persons.Add(personEntity);
-//     return ("/namelist", personEntity);
-// } );
-//
-// app.MapGet("namelist", () =>
-// {
-//     return persons;
-// });
-// app.MapGet("/zipcode/{id}", (string id) => { return regionalOffice.DoesZipCodeExist(id); });
-
-// app.MapPost($"/address", ([FromBody] Address address) =>
-//     {
-//         return PostOfficeFarsta.DoesAddressCodeExist(address);
-//     }
-// );
-// //
-
-// app.MapPost("/sendmail", ([FromBody] MailItem item) =>
-//     { return regionalOffice.CreateMailItem(item); });
-
-// app.MapPost("/address/", ([FromBody] Address address) =>
-// {
-//      return regionalOffice.DoesAddressExist(address) ;
-//     
-// });
-// // app.MapGet("/zipcode/{id}", getId);
-// // app.MapGet("/zipcode/{id}", getId);
-// // app.MapGet("/zipcode/{id}", (string id) => getId(id));
-//
-//
-// string getId(string id)
-// {
-//     return $"Hej {id}";
-// }
-
-
-//basically du ska kunna skicka in en zipkod och endpointens job
-//är att kolla om den zipkoden existerar i regional
-
-
-// Console.WriteLine(mailItem.ShowHistory());
-// Console.WriteLine(person1.GetHashCode());
-// var mailItem = office.CreateOutgoingMail(
-//     item.Sender,
-//     item.Recipient,
-//     item.WeightGrams,
-//     item.MailType
-// );
-
-// app.MapPost("/sendmail/{zipcode}", (string zipcode, MailItem item) =>
-// {
-//     if (!regionalOffice.DoesZipCodeExist(zipcode))
-//       throw new ("ZipCode not found");
-//
-//     var office = regionalOffice.GetOffice(zipcode);
-//
-//     office.CreateMailItemAtOffice(item);
-//
-//     office.ProcessMailCycle();
-//     regionalOffice.RouteMailCycle();
-//
-//     var destinationOffice = regionalOffice.GetOffice(item.Recipient.Address.ZipCode);
-//     
-//     destinationOffice.ProcessMailCycle();
-//     
-//     return item;
-// });
