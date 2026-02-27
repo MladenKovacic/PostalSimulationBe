@@ -7,7 +7,6 @@ using PostalRoutingSimulation.MailItem;
 
 public class RegionalCenter
 {
-    public PostalOffice Offices { get; set; }
     public List<Address> Addresses { get; set; }
     private Dictionary<string, PostalOffice> OfficesByZip { get; set; }
     public List<MailItem> Holding { get; set; }
