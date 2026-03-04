@@ -6,11 +6,11 @@ public class Address
     public string City { get; init; }
     public string ZipCode { get; init; }
 
-    public Address(string street, string city, string zipcode)
+    public Address(string street, string city, string zipCode)
     {
         Street = street;
         City = city;
-        ZipCode = zipcode;
+        ZipCode = zipCode;
     }
 
     

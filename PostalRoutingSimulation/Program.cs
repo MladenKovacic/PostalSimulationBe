@@ -10,9 +10,21 @@ using PostalRoutingSimulation.MailItem;
 using PostalRoutingSimulation.PostalRouting;
 
 
-var builder = WebApplication.CreateBuilder(args);
-var app = builder.Build();
 
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("frontend", policy =>
+    {
+        policy.WithOrigins("http://localhost:5173",
+                "http://localhost:3000")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+var app = builder.Build();
+app.UseCors("frontend");
 var regionalOffice = new RegionalCenter();
 
 var farsta = new PostalOffice(new Address("farstavägen", "farsta", "12640"), regionalOffice);
@@ -33,6 +45,11 @@ var person2 = new Person("Milo",
 farsta.RegisterResident(person1);
 solna.RegisterResident(person2);
 
+
+app.MapGet("/getall/postaloffices", () =>
+{
+    return regionalOffice.GetAllOffices().ToList();
+});
 
 app.MapPost("/sendpackage", (CreateMailItemReq req) =>
 {
@@ -74,18 +91,15 @@ app.MapPost("/sendmail/{zipcode}", (string zipcode, CreateMailItemReq req) =>
 app.MapGet("/getall/package/list/{zipcode}", (string zipcode) =>
 {
     if (!regionalOffice.DoesZipCodeExist(zipcode))
-        throw new("ZipCode not found");
+        throw new Exception("ZipCode not found");
 
     var office = regionalOffice.GetOffice(zipcode);
 
-
     var mappedOutgoing = office.Outgoing.Select(FilteredMailItem.toDTO).ToList();
-
     var mappedIncoming = office.Incoming.Select(FilteredMailItem.toDTO).ToList();
 
     return new ZipcodePackageListResponse(mappedOutgoing, mappedIncoming);
 });
 
-app.MapGet("/getall/postaloffices", () => regionalOffice.GetAllOffices());
 
-app.Run();
+app.Run("http://localhost:5000");
